@@ -14,7 +14,7 @@ public class MyTasks {
     String[] modelList = {"S4", "M3", "Camero", "Caliber", "Portofino", "Yukon", "Accord", "Q50", "Wrangler", "Sorento", "Evora", "P1", "GT-R", "Cayenne", "Ghost", "WRX", "Model S", "Beetle"};
     Random random = new Random();
 
-    @Scheduled(fixedRate = 4000)
+    @Scheduled(fixedRate = 1000)
     public void addVehicle() {
         String url = "http://localhost:8080/addVehicle";
         String make = makerList[random.nextInt(makerList.length)];
@@ -36,7 +36,7 @@ public class MyTasks {
         restTemplate.postForObject(url, newVehicle, Vehicle.class);
     }
 
-    @Scheduled(fixedRate = 10000)
+    @Scheduled(fixedRate = 15000)
     public void deleteVehicle() {
         String url = "http://localhost:8080/deleteVehicle/";
 
@@ -59,12 +59,12 @@ public class MyTasks {
         restTemplate.put(url + id, newVehicle);
     }
 
-    @Scheduled(fixedRate = 10000)
-//    @Scheduled(cron = "0 /10 * * * *") //doesn't work with cron expression
-    public void latestVehicleReport() {
-        String url = "http://localhost:8080/getLatestVehicles";
-        restTemplate.getForObject(url, Vehicle.class);
-    }
+//    @Scheduled(fixedRate = 10000)
+////    @Scheduled(cron = "0 /10 * * * *") //doesn't work with cron expression
+//    public void latestVehicleReport() {
+//        String url = "http://localhost:8080/getLatestVehicles";
+//        restTemplate.getForObject(url, Vehicle.class);
+//    }
 
 }
 

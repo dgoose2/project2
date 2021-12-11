@@ -1,5 +1,6 @@
 package com.example.project2;
 
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.*;
@@ -20,6 +21,10 @@ public class ProjectController {
 
     List<String> vehicleStringList;
 
+    @Autowired
+    private VehiclesDao vehiclesDao;
+
+
     public List<String> getVehicleStringList() {
         return vehicleStringList;
     }
@@ -35,6 +40,8 @@ public class ProjectController {
             vehicleStringList.add(line);
         }
     }
+
+
 
     /**
      * POST method that creates a new vehicle with the provided details in the body of the API request.
@@ -55,39 +62,19 @@ public class ProjectController {
      */
     @RequestMapping(value = "/addVehicle", method = RequestMethod.POST)
     public Vehicle addVehicle(@RequestBody Vehicle newVehicle) throws IOException {
-        vehicleStringList.add(newVehicle.vehicleToString());
-        updateData();
-
+        vehiclesDao.create(newVehicle);
         return newVehicle;
     }
 
 
     @RequestMapping(value = "/getVehicle/{id}", method = RequestMethod.GET)
     public Vehicle getVehicle(@PathVariable("id") int id)throws IOException {
-        if (id < vehicleStringList.size()) {
-            String vehicle = vehicleStringList.get(id);
-            if (vehicle.equals("")) {
-                return null; //TODO exception (vehicle was deleted)
-            }
-            return constructVehicle(vehicle);
-        } else {
-            return null; //TODO out of bounds id
-        }
+        return vehiclesDao.getById(id);
     }
 
     @RequestMapping(value = "/updateVehicle/{id}", method = RequestMethod.PUT)
     public Vehicle updateVehicle(@PathVariable("id") int id, @RequestBody Vehicle newVehicle)throws IOException{
-        if (id < vehicleStringList.size()) {
-            String vehicle = vehicleStringList.get(id);
-            if (vehicle.equals("")) {
-                return null; //TODO exception (vehicle was deleted)
-            }
-            vehicleStringList.set(id, newVehicle.vehicleToString());
-            updateData();
-            return newVehicle;
-        } else {
-            return null; //TODO out of bounds id
-        }
+        return vehiclesDao.insertById(newVehicle, id);
     }
 
     @RequestMapping(value = "/deleteVehicle/{id}", method = RequestMethod.DELETE)
@@ -95,55 +82,29 @@ public class ProjectController {
         ResponseEntity responseEntity;
         Scanner scanner = new Scanner(new File(fileName));
 
-        if (id > vehicleStringList.size()) {
+        if (vehiclesDao.getById(id) == null) {
             responseEntity = new ResponseEntity(HttpStatus.NOT_ACCEPTABLE);
         } else {
-            vehicleStringList.set(id, "");
-            updateData();
+            vehiclesDao.deleteById(id);
             responseEntity = new ResponseEntity(HttpStatus.OK);
         }
         return responseEntity;
     }
 
-    @RequestMapping(value = "/getLatestVehicles", method = RequestMethod.GET)
-    public List<Vehicle> getLatestVehicles() throws IOException{
-        List<Vehicle> latestVehicles = new ArrayList<>();
-        File file = new File("./latestVehicleReport.txt");
-        FileWriter outputFile = new FileWriter(file, false);
-
-        for(int i = vehicleStringList.size()-1, latestVehicleCounter = 0; i > 0 && latestVehicleCounter < 10; i--, latestVehicleCounter++){
-            if (!vehicleStringList.get(i).equals("")) {
-                latestVehicles.add(constructVehicle(vehicleStringList.get(i)));
-                outputFile.write(vehicleStringList.get(i) + "\n");
-                System.out.println(vehicleStringList.get(i));
-            }
-        }
-        outputFile.close();
-        return latestVehicles;
-    }
-
-    private void updateData() throws IOException{
-        File file = new File(fileName);
-        FileWriter outputFile = new FileWriter(file, false);
-        for (int i = 0; i < vehicleStringList.size(); i++) {
-            outputFile.write(vehicleStringList.get(i) + "\n");
-        }
-        outputFile.close();
-    }
-
-    private Vehicle constructVehicle(String vehicleString){
-        Scanner scanner = new Scanner(vehicleString);
-        String make = scanner.next();
-        String vehicleDetails = scanner.next();
-        String[] details = vehicleDetails.split(",");
-        // Sample Output:
-        // Ford Focus,1850,100,TRUE
-        String model = details[0];
-        int modelYear = Integer.parseInt(details[1]);
-        int price = Integer.parseInt(details[2]);
-        int mpg = 0; // not in txt file??
-        boolean fwd;
-        fwd = (details.length == 4); //fwd is the 4th detail if true, false if missing
-        return new Vehicle(make, model, modelYear, fwd, price, mpg);
-    }
+//    @RequestMapping(value = "/getLatestVehicles", method = RequestMethod.GET)
+//    public List<Vehicle> getLatestVehicles() throws IOException{
+//        List<Vehicle> latestVehicles = new ArrayList<>();
+//        File file = new File("./latestVehicleReport.txt");
+//        FileWriter outputFile = new FileWriter(file, false);
+//
+//        for(int i = vehicleStringList.size()-1, latestVehicleCounter = 0; i > 0 && latestVehicleCounter < 10; i--, latestVehicleCounter++){
+//            if (!vehicleStringList.get(i).equals("")) {
+//                latestVehicles.add(constructVehicle(vehicleStringList.get(i)));
+//                outputFile.write(vehicleStringList.get(i) + "\n");
+//                System.out.println(vehicleStringList.get(i));
+//            }
+//        }
+//        outputFile.close();
+//        return latestVehicles;
+//    }
 }

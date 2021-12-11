@@ -1,5 +1,6 @@
 package com.example.project2;
 
+import javax.persistence.*;
 import java.io.Serializable;
 
 /**
@@ -8,8 +9,10 @@ import java.io.Serializable;
  * Contains getter and setter methods, as well as a printVehicle method that prints all
  * of the information in a formatted block.
  */
-public class Vehicle implements Serializable {
 
+@Entity
+@Table(name = "vehicles")
+public class Vehicle implements Serializable {
     private String make;
     private String model;
     private int modelYear;
@@ -19,6 +22,7 @@ public class Vehicle implements Serializable {
 
     /**
      * Public default constructor
+     *
      * @param make
      * @param model
      * @param modelYear
@@ -37,6 +41,7 @@ public class Vehicle implements Serializable {
 
     /**
      * Gets the make of the vehicle
+     *
      * @return the make
      */
     public String getMake() {
@@ -45,6 +50,7 @@ public class Vehicle implements Serializable {
 
     /**
      * Sets the make of the vehicle
+     *
      * @param make the make
      */
     public void setMake(String make) {
@@ -53,6 +59,7 @@ public class Vehicle implements Serializable {
 
     /**
      * Gets the model of the vehicle
+     *
      * @return the model
      */
     public String getModel() {
@@ -61,6 +68,7 @@ public class Vehicle implements Serializable {
 
     /**
      * Sets the model of the vehicle
+     *
      * @param model the model
      */
     public void setModel(String model) {
@@ -69,6 +77,7 @@ public class Vehicle implements Serializable {
 
     /**
      * Gets the model year of the vehicle
+     *
      * @return the model year
      */
     public int getModelYear() {
@@ -77,6 +86,7 @@ public class Vehicle implements Serializable {
 
     /**
      * Sets the model year of the vehicle
+     *
      * @param modelYear the model year
      */
     public void setModelYear(int modelYear) {
@@ -85,6 +95,7 @@ public class Vehicle implements Serializable {
 
     /**
      * Checks if the vehicle is a four wheel drive or not
+     *
      * @return true if the vehicle is a four wheel drive, false if it is not
      */
     public boolean isFwd() {
@@ -93,6 +104,7 @@ public class Vehicle implements Serializable {
 
     /**
      * Sets if the vehicle is a four wheel drive or not
+     *
      * @param fwd true if the vehicle is a four wheel drive, false if it is not
      */
     public void setFwd(boolean fwd) {
@@ -101,6 +113,7 @@ public class Vehicle implements Serializable {
 
     /**
      * Gets the retail price of the vehicle
+     *
      * @return the retail price
      */
     public int getPrice() {
@@ -109,6 +122,7 @@ public class Vehicle implements Serializable {
 
     /**
      * Sets the retail price of the vehicle
+     *
      * @param price the retail price of the vehicle
      */
     public void setPrice(int price) {
@@ -117,6 +131,7 @@ public class Vehicle implements Serializable {
 
     /**
      * Gets the number of miles per gallon of the vehicle
+     *
      * @return the number of miles per gallon
      */
     public int getMpg() {
@@ -125,6 +140,7 @@ public class Vehicle implements Serializable {
 
     /**
      * Sets the number of miles per gallon of the vehicle
+     *
      * @param mpg the number of miles per gallon
      */
     public void setMpg(int mpg) {
@@ -148,9 +164,9 @@ public class Vehicle implements Serializable {
     /**
      * Returns all information as string. Used for debugging.
      */
-    public String vehicleToString(){
+    public String vehicleToString() {
         String vehicleInformation;
-        if(!this.fwd)
+        if (!this.fwd)
             vehicleInformation = this.make + " " + this.model + "," + this.modelYear + "," + this.price;
         else
             vehicleInformation = this.make + " " + this.model + "," + this.modelYear + "," + this.price + "," + "TRUE";
