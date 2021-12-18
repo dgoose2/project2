@@ -32,7 +32,6 @@ public class ProjectController {
     @PostConstruct
     public void initializeData() throws FileNotFoundException {
         fileName = "./vehicles.txt";
-
         vehicleStringList = new ArrayList<>();
         Scanner scanner = new Scanner(new File(fileName));
         while (scanner.hasNextLine()) {
@@ -66,17 +65,45 @@ public class ProjectController {
         return newVehicle;
     }
 
-
+    /**
+     *
+     * @param id
+     * Utilizing the parameter for id we are getting the vehicle by the specified id
+     * We also utilize the vehiclesDao method that we created called getByID
+     * @return
+     * We are then returning the vehicle by the requested id.
+     * @throws IOException
+     */
     @RequestMapping(value = "/getVehicle/{id}", method = RequestMethod.GET)
     public Vehicle getVehicle(@PathVariable("id") int id)throws IOException {
         return vehiclesDao.getById(id);
     }
 
+    /**
+     *
+     * @param id
+     * We are utilising our helper method in vehiclesDao called insertById that we created in order to add into the database
+     * We are given a parementer of id and this parameter is used in order to update a vehicle by a specific id
+     * @param newVehicle
+     * We use the newVehicle parameter in order to update the given behicle at a specified id
+     * @return
+     * We then return the new vehicle into the database that we created
+     * @throws IOException
+     */
     @RequestMapping(value = "/updateVehicle/{id}", method = RequestMethod.PUT)
     public Vehicle updateVehicle(@PathVariable("id") int id, @RequestBody Vehicle newVehicle)throws IOException{
         return vehiclesDao.insertById(newVehicle, id);
     }
 
+    /**
+     *
+     * @param id
+     * We use this specified id in order to deleted a vehicle at a specified id
+     * We created a helper method called deleteByID in order to help with this
+     * @return
+     * We then return our responseEntity
+     * @throws IOException
+     */
     @RequestMapping(value = "/deleteVehicle/{id}", method = RequestMethod.DELETE)
     public ResponseEntity<String> deleteVehicle(@PathVariable("id") int id) throws IOException{
         ResponseEntity responseEntity;
@@ -91,20 +118,22 @@ public class ProjectController {
         return responseEntity;
     }
 
-//    @RequestMapping(value = "/getLatestVehicles", method = RequestMethod.GET)
-//    public List<Vehicle> getLatestVehicles() throws IOException{
-//        List<Vehicle> latestVehicles = new ArrayList<>();
-//        File file = new File("./latestVehicleReport.txt");
-//        FileWriter outputFile = new FileWriter(file, false);
-//
-//        for(int i = vehicleStringList.size()-1, latestVehicleCounter = 0; i > 0 && latestVehicleCounter < 10; i--, latestVehicleCounter++){
-//            if (!vehicleStringList.get(i).equals("")) {
-//                latestVehicles.add(constructVehicle(vehicleStringList.get(i)));
-//                outputFile.write(vehicleStringList.get(i) + "\n");
-//                System.out.println(vehicleStringList.get(i));
-//            }
-//        }
-//        outputFile.close();
-//        return latestVehicles;
-//    }
+    /**
+     *
+     * @return
+     * In this method we create a list and then loop through the database in order to get the ten most recent vehicles
+     * We used a method in order to get it by the id if it was a valid vehicle
+     * @throws IOException
+     */
+    @RequestMapping(value = "/getLatestVehicles", method = RequestMethod.GET)
+    public List<Vehicle> getLatestVehicles() throws IOException{
+        List<Vehicle> vehicleList = new ArrayList<>();
+        for(int i = vehicleStringList.size()-1, latestVehicleCounter = 0; i > 0 && latestVehicleCounter < 10; i--, latestVehicleCounter++){
+            if (!vehicleStringList.get(i).equals("")) {
+                Vehicle validVehicle = vehiclesDao.getById(i);
+                vehicleList.add(validVehicle);
+            }
+        }
+        return vehicleList;
+    }
 }

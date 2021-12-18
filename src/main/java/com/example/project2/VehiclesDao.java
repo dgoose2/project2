@@ -19,10 +19,26 @@ public class VehiclesDao {
         entityManager.persist(vehicle);
     }
 
+    /**
+     *
+     * @param id
+     * We use the parameter of id in order to find it utilizing the entity manager
+     * @return
+     * We then return our entity manager
+     */
     public Vehicle getById(int id){
         return entityManager.find(Vehicle.class, id);
     }
 
+    /**
+     *
+     * @param vehicle
+     * We use the parameter of vehicle in order to add it by a specific vehicle
+     * @param id
+     * We also use a value of id in order to insert a vehicle by a specific id
+     * @return
+     * We then return the new vehicle that we created
+     */
     public Vehicle insertById(Vehicle vehicle, int id){
         Vehicle originalVehicle = entityManager.find(Vehicle.class, id);
         originalVehicle.setMake(vehicle.getMake());
@@ -35,6 +51,13 @@ public class VehiclesDao {
         return vehicle;
     }
 
+    /**
+     *
+     * @param id
+     * We use a value for an id in order to delete a specific vehicle by a specified id
+     * @return
+     * We then return the vehicle that we deleted
+     */
     public Vehicle deleteById(int id){
         entityManager.getTransaction().begin();
         Vehicle vehicle = entityManager.find(Vehicle.class, id);
